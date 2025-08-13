@@ -6,10 +6,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     STEAMCMD_DIR=/home/steam/steamcmd \
     GAMES_DIR=/home/steam/games
 
-# 将apt源改为中国镜像源（清华TUNA）
-RUN sed -i 's/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list \
-    && sed -i 's/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list
-
 # 安装SteamCMD和常见依赖（包括32位库）
 RUN apt-get update \
     && dpkg --add-architecture i386 \
