@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM debian:trixie-slim AS base
 
 ENV DEBIAN_FRONTEND=noninteractive \
     STEAM_USER=steam \
@@ -11,7 +11,7 @@ RUN sed -i 's/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.li
     && sed -i 's/security.debian.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list
 
 # 安装SteamCMD和常见依赖（包括32位库）
-RUN apt-get update && apt-get upgrade -y \
+RUN apt-get update \
     && dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -21,9 +21,17 @@ RUN apt-get update && apt-get upgrade -y \
         curl \
         jq \
         xdg-user-dirs \
-        libncurses5:i386 \
+        # Node.js相关依赖
+        gnupg \
+        # Python相关依赖
+        python3 \
+        python3-pip \
+        python3-dev \
+        python3-venv \
+        # 游戏服务器依赖
+        libncurses6:i386 \
         libbz2-1.0:i386 \
-        libicu67:i386 \
+        libicu-dev \
         libxml2:i386 \
         libstdc++6:i386 \
         lib32gcc-s1 \
@@ -31,9 +39,9 @@ RUN apt-get update && apt-get upgrade -y \
         lib32stdc++6 \
         libcurl4-gnutls-dev:i386 \
         libcurl4-gnutls-dev \
-        libgl1-mesa-glx:i386 \
-        gcc-10-base:i386 \
-        libssl1.1:i386 \
+        libgl1 \
+        gcc-13-base:i386 \
+        libssl3:i386 \
         libopenal1:i386 \
         libtinfo6:i386 \
         libtcmalloc-minimal4:i386 \
@@ -43,13 +51,12 @@ RUN apt-get update && apt-get upgrade -y \
         libasound2 \
         libpulse0 \
         libnss3 \
-        libgconf-2-4 \
         libcap2 \
         libatk1.0-0 \
         libcairo2 \
         libcups2 \
         libgtk-3-0 \
-        libgdk-pixbuf2.0-0 \
+        libgdk-pixbuf-2.0-0 \
         libpango-1.0-0 \
         libx11-6 \
         libxt6 \
@@ -64,7 +71,6 @@ RUN apt-get update && apt-get upgrade -y \
         libpugixml1v5 \
         libvulkan1 \
         libvulkan1:i386 \
-        libgconf-2-4:i386 \
         # 额外的Unity引擎依赖（特别针对7日杀）
         libatk1.0-0:i386 \
         libxcomposite1 \
@@ -92,9 +98,8 @@ RUN apt-get update && apt-get upgrade -y \
         libatomic1:i386 \
         nano \
         net-tools \
-        netcat \
+        netcat-openbsd \
         procps \
-        python3 \
         tar \
         unzip \
         bzip2 \
